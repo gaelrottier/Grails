@@ -74,33 +74,18 @@ class POIFrontController {
             return
         }
 
-        POIInstance.groupes.each {
-            println it.nom
+        List<Groupe> groupes = POIInstance.groupes.collect()
+        groupes.each { g ->
+            POIInstance.removeFromGroupes(g)
         }
 
-        Groupe.list().each { g ->
-            POIInstance.groupes.each { gp ->
-                if (g.equals(gp))
-                    g.addToPoints(POIInstance)
-                else
-                    g.removeFromPoints(POIInstance)
-                g.save flush: true
-            }
-        }
-        /*Groupe.list().each { g ->
-            println POIInstance.groupes.toListString()
-            POI poi = POI.findWhere(id: POIInstance.id)
-            println poi.equals(POIInstance)
-            if (g.points.contains(poi) && !POIInstance.groupes.contains(g)) {
-                println "Remove"
-                g.removeFromPoints(p)
-            }
-            if (!g.points.contains(poi) && poi.groupes.contains(g)) {
-                println "Add"
-                g.addToPoints(POIInstance)
-            }
-        }*/
+        POIInstance.save flush: true
 
+        params['groupes'].each { g ->
+            POIInstance.addToGroupes(Groupe.findWhere(id: Long.parseLong(g)))
+        }
+
+        POIInstance.save flush: true
 
         request.withFormat {
             form multipartForm {
