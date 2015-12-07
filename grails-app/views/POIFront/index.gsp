@@ -4,6 +4,8 @@
 		<meta name="layout" content="main">
 		<g:set var="entityNameS" value="${message(code: 'poi.label.singulier', default: 'tp1grails.POI')}" />
 		<g:set var="entityNameP" value="${message(code: 'poi.label.pluriel', default: 'tp1grails.POI')}" />
+		<g:set var="groupesP" value="${message(code: 'groupe.label.pluriel', default: 'groupe')}"/>
+		<g:set var="profil" value="${message(code: 'utilisateur.my.profile.label', default: 'profil')}"/>
 		<title><g:message code="default.list.label" args="[entityNameS]" /></title>
 	</head>
 	<body>
@@ -11,6 +13,11 @@
 		<div class="nav" role="navigation">
 			<ul>
 				<li><a class="home" href="${createLink(uri: '/')}"><g:message code="default.home.label"/></a></li>
+				<li><g:link class="list" url="${createLink(mapping: "group", action: "index")}"><g:message
+						code="default.list.label" args="[groupesP]"/></g:link></li>
+				<li><g:link class="edit"
+							url="${createLink(mapping: "user", action: "show", id: session.utilisateur.id)}"><g:message
+							code="utilisateur.my.profile.label"/></g:link></li>
 				<li><g:link class="create" action="create" mapping="poi"><g:message code="default.new.label.masculin" args="[entityNameS]" /></g:link></li>
 			</ul>
 		</div>
