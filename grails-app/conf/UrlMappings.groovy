@@ -15,5 +15,7 @@ class UrlMappings {
         name "user": "/user/$action" { controller = "utilisateurFront" }
 
         name "poi": "/poi/$action" { controller = "POIFront" }
+
+        name "groupe": "/group/$action" {controller = "groupeFront"}
     }
 }
