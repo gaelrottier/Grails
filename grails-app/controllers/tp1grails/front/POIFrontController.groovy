@@ -1,8 +1,10 @@
 package tp1grails.front
 
 import grails.transaction.Transactional
+import tp1grails.Evaluation
 import tp1grails.Groupe
 import tp1grails.POI
+import tp1grails.Utilisateur
 
 import static org.springframework.http.HttpStatus.CREATED
 import static org.springframework.http.HttpStatus.NOT_FOUND
@@ -10,7 +12,7 @@ import static org.springframework.http.HttpStatus.OK
 
 class POIFrontController {
 
-    static allowedMethods = [save: "POST", update: "PUT"]
+    static allowedMethods = [save: "POST", update: "PUT", comment: "POST"]
 
     def beforeInterceptor = [action: this.&auth]
 
@@ -19,6 +21,22 @@ class POIFrontController {
             redirect(controller: 'redirect', action: 'login')
             return false
         }
+    }
+
+    def comment(POI POIInstance) {
+        println params
+        println POIInstance.nom
+        Evaluation e = new Evaluation(note: params['note'], commentaire: params['evaluation'])
+
+        Utilisateur u = Utilisateur.findWhere(id: session.utilisateur.id)
+        u.addToEvaluations(e)
+        u.save flush: true
+
+        POIInstance.addToEvaluations(e)
+
+        POIInstance.save flush: true
+
+        redirect(controller: "POIFront", action: "show", id: POIInstance.id)
     }
 
     def index(Integer max) {
@@ -89,7 +107,7 @@ class POIFrontController {
 
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.updated.message', args: [message(code: 'poi.label', default: 'tp1grails.POI'), POIInstance.id])
+                flash.message = message(code: 'default.updated.message', args: [message(code: 'poi.label', default: 'POI'), POIInstance.id])
                 redirect(controller: "POIFront", action: "show", id: POIInstance.id)
             }
             '*' { respond POIInstance, [status: OK] }
@@ -99,7 +117,7 @@ class POIFrontController {
     protected void notFound() {
         request.withFormat {
             form multipartForm {
-                flash.message = message(code: 'default.not.found.message', args: [message(code: 'poi.label', default: 'tp1grails.POI'), params.id])
+                flash.message = message(code: 'default.not.found.message', args: [message(code: 'poi.label', default: 'POI'), params.id])
                 redirect action: "index", method: "GET"
             }
             '*' { render status: NOT_FOUND }

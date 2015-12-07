@@ -53,9 +53,8 @@
                                                                                default="Evaluations"/></span>
 
                 <g:each in="${POIInstance.evaluations}" var="e">
-                    <span class="property-value" aria-labelledby="evaluations-label"><g:link controller="evaluation"
-                                                                                             action="show"
-                                                                                             id="${e.id}">${e?.utilisateur.nom + " " + e?.utilisateur.prenom + " : " + e?.note}</g:link></span>
+                    <span class="property-value"
+                          aria-labelledby="evaluations-label">${e?.utilisateur.nom + " " + e?.utilisateur.prenom + " : " + e?.commentaire + " : " + e?.note}</span>
                 </g:each>
 
             </li>
@@ -111,6 +110,17 @@
         </g:if>
 
     </ol>
+
+    <g:form class="fieldcontain" url="[mapping: 'poi', resource: POIInstance, action: 'comment']" method="POST">
+        <label for="note">Note :</label>
+        <input type="number" name="note" id="note" step="1" min="0" max="5">/5<br><br>
+        <label for="evaluation">
+            <g:message code="evaluation.label" default="Evaluation"/>
+            <span class="required-indicator">*</span>
+        </label>
+        <g:textArea name="evaluation" required=""/><br>
+        <g:actionSubmit class="btn-danger" action="comment" name="Commenter" value="Commenter"/>
+    </g:form>
 
     <fieldset class="buttons">
         <g:link class="edit"
